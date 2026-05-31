@@ -4,9 +4,11 @@ on:
   push:
     branches:
       - 24.10-nss-build
+    tags:
+      - 301w-v24.10*
 
 permissions:
-  contents: read
+  contents: write
 
 jobs:
   build:
@@ -22,3 +24,11 @@ jobs:
       - run: make download -j4 V=s
       - run: make -j4 V=s
       - run: cat .config
+      - if: startsWith(github.ref, 'refs/tags/')
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          find bin .config -type f \( -name "*.bin" -o -name "*.itb" -o -name "*.ipk" \) -print0 \
+            | xargs -0 gh release create "${{ github.ref_name }}" \
+                --title "Release ${{ github.ref_name }}" \
+                --notes "Automated release for tag ${{ github.ref_name }}"
