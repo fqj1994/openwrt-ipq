@@ -1,0 +1,24 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - 24.10-nss-build
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      - run: sudo apt update
+      - run: sudo apt install -y bzip2 g++ gawk gcc git glibc-source libncurses-dev make build-essential python3-setuptools
+      - run: ./scripts/feeds update
+      - run: ./scripts/feeds install -a
+      - run: cp nss-setup/config-nss.seed .config && cat configs >> .config
+      - run: make defconfig V=s
+      - run: make download -j4 V=s
+      - run: make -j4 V=s
+      - run: cat .config
