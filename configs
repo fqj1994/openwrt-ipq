@@ -1,6 +1,11 @@
 CONFIG_TARGET_qualcommax_ipq807x_DEVICE_qnap_301w=y
+
 CONFIG_PACKAGE_ds-lite=y
+CONFIG_PACKAGE_tailscale=y
+CONFIG_PACKAGE_mdns-repeater=y
+
 CONFIG_PACKAGE_kmod-usb-serial=y
 CONFIG_PACKAGE_kmod-usb-serial-ftdi=y
 CONFIG_PACKAGE_kmod-ip6-tunnel=y
 CONFIG_PACKAGE_kmod-iptunnel6=y
+CONFIG_PACKAGE_kmod-tun=y

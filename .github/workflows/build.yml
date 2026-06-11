@@ -28,7 +28,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          find bin .config -type f \( -name "*.bin" -o -name "*.itb" -o -name "*.ipk" \) -print0 \
+          find bin .config -type f \( -name "*.bin" -o -name "*.itb" -o -name "*.config" \) -print0 \
             | xargs -0 gh release create "${{ github.ref_name }}" \
                 --title "Release ${{ github.ref_name }}" \
                 --notes "Automated release for tag ${{ github.ref_name }}"
