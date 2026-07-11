@@ -3,7 +3,7 @@ name: Build
 on:
   push:
     branches:
-      - 24.10-nss-build
+      - 24.10-nss*
     tags:
       - 301w-v24.10*
 
@@ -12,6 +12,7 @@ permissions:
 
 jobs:
   build:
+    if: github.actor == 'fqj1994'
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
