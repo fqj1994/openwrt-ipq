@@ -1,0 +1,35 @@
+name: Build
+
+on:
+  push:
+    branches:
+      - "*nss*"
+    tags:
+      - 301w-*
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    if: github.actor == 'fqj1994'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd
+      - run: sudo apt update
+      - run: sudo apt install -y bzip2 g++ gawk gcc git glibc-source libncurses-dev make build-essential python3-setuptools
+      - run: ./scripts/feeds update
+      - run: ./scripts/feeds install -a
+      - run: cp nss-setup/config-nss.seed .config && cat configs >> .config
+      - run: make defconfig V=s
+      - run: make download -j4 V=s
+      - run: make -j4 V=s
+      - run: cat .config
+      - if: startsWith(github.ref, 'refs/tags/')
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          find bin .config -type f \( -name "*.bin" -o -name "*.itb" -o -name "*.config" \) -print0 \
+            | xargs -0 gh release create "${{ github.ref_name }}" \
+                --title "Release ${{ github.ref_name }}" \
+                --notes "Automated release for tag ${{ github.ref_name }}"
